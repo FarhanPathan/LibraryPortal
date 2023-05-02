@@ -66,10 +66,11 @@
     font-size: 16px;
     font-weight: bold;
 }
-
 /* main container styling */
 .container {
-    padding: 20px;    
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 .alert {
@@ -163,63 +164,65 @@ tr:nth-child(even) {
             <a href="#" class="navbar-brand">Library Portal</a>
         </div>
         <div class="navbar-center">
-            
+            <ul class="navbar-links">
+                <li><a href="{{ route('dashboard') }}">Books</a></li>
+                <li><a href="{{ route('borrow') }}">Borrow</a></li>
+                <li><a href="{{ route('return') }}">Return</a></li>
+                <li><a href="{{ route('myaccount') }}">My Account</a></li>
+            </ul>
         </div>
         <div class="navbar-right">
         <ul class="navbar-links">
-        
+            <li>
+                <form id="logout-form" method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" style="display:none;"></button>
+                </form>
+                <a href="#" onclick="document.getElementById('logout-form').submit()">Logout</a>
+            </li>
         </ul>
         </div>
     </nav>
-    
-    //coding part
     <div class="container">
         @if(session('success'))
             <div class="alert alert-success">
                 {{ session('success') }}
             </div>
         @endif
-        @if(session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
 
-        <h1>Library Login</h1>
-        @php 
-            if(isset($_GET['new'])){
-                $new = $_GET['new'];
-            }
-        @endphp
-        @if(isset($new))
-            <form action="{{ route('register') }}" method="POST">
-                <div class="form-group">
-                    <label for="student_id">Please enter a new pin</label>
-                    <input type="text" name="student_id" id="student_id" class="form-control" value="{{ $new }}" required readonly>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password" id="password" class="form-control" placeholder="New PIN" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="New PIN" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Register</button>
-            </form>
-        @else
-            <br>
-            <form action="{{ route('login') }}" method="POST">
-                <div class="form-group">
-                    <input type="text" name="student_id" id="student_id" class="form-control" placeholder="Enter Student ID" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password" id="password" class="form-control" placeholder="Enter PIN" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-            </form>
-        @endif
-        
+        <h1>Books</h1>
+        <table id="datatable">
+            <thead>
+                <tr>
+                    <th>ISBN</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Year</th>
+                    <th>Copies</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($books as $book)
+                    <tr>
+                        <td>{{ $book->isbn }}</td>
+                        <td>{{ $book->title }}</td>
+                        <td>{{ $book->author }}</td>
+                        <td>{{ $book->year }}</td>
+                        <td>{{ $book->copies }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
-    
-    
+    <script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-
+pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<script src="//cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#datatable').DataTable({
+                "paging": false,
+            });
+        });
+    </script>
 </body>
 </html>

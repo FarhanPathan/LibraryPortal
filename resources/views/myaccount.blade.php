@@ -66,10 +66,11 @@
     font-size: 16px;
     font-weight: bold;
 }
-
 /* main container styling */
 .container {
-    padding: 20px;    
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
 }
 
 .alert {
@@ -163,16 +164,25 @@ tr:nth-child(even) {
             <a href="#" class="navbar-brand">Library Portal</a>
         </div>
         <div class="navbar-center">
-            
+            <ul class="navbar-links">
+                <li><a href="{{ route('dashboard') }}">Books</a></li>
+                <li><a href="{{ route('borrow') }}">Borrow</a></li>
+                <li><a href="{{ route('return') }}">Return</a></li>
+                <li><a href="{{ route('myaccount') }}">My Account</a></li>
+            </ul>
         </div>
         <div class="navbar-right">
         <ul class="navbar-links">
-        
+            <li>
+                <form id="logout-form" method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" style="display:none;"></button>
+                </form>
+                <a href="#" onclick="document.getElementById('logout-form').submit()">Logout</a>
+            </li>
         </ul>
         </div>
     </nav>
-    
-    //coding part
     <div class="container">
         @if(session('success'))
             <div class="alert alert-success">
@@ -185,41 +195,31 @@ tr:nth-child(even) {
             </div>
         @endif
 
-        <h1>Library Login</h1>
-        @php 
-            if(isset($_GET['new'])){
-                $new = $_GET['new'];
-            }
-        @endphp
-        @if(isset($new))
-            <form action="{{ route('register') }}" method="POST">
-                <div class="form-group">
-                    <label for="student_id">Please enter a new pin</label>
-                    <input type="text" name="student_id" id="student_id" class="form-control" value="{{ $new }}" required readonly>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password" id="password" class="form-control" placeholder="New PIN" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password_confirmation" id="password_confirmation" class="form-control" placeholder="New PIN" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Register</button>
-            </form>
-        @else
-            <br>
-            <form action="{{ route('login') }}" method="POST">
-                <div class="form-group">
-                    <input type="text" name="student_id" id="student_id" class="form-control" placeholder="Enter Student ID" required>
-                </div>
-                <div class="form-group">
-                    <input type="password" name="password" id="password" class="form-control" placeholder="Enter PIN" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Login</button>
-            </form>
-        @endif
-        
+        <h1>My Account</h1>
+        <table>
+            <thead>
+                <tr>
+                    <th>Book</th>
+                    <th>Date Borrowed</th>
+                    <th>Date Returned</th>
+                    <th>Overdue</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($accounts as $account)
+                    <tr>
+                        <td>{{ $account->book_id }}</td>
+                        <td>{{ $account->date_borrowed }}</td>
+                        <td>{{ $account->date_returned }}</td>
+                        @if($account->overdue > 0)
+                            <td style="color: red;">{{ $account->overdue }} days</td>
+                        @else
+                            <td>{{ $account->overdue }}</td>
+                        @endif
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
-    
-    
 </body>
 </html>
