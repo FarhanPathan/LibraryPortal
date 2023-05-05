@@ -183,6 +183,36 @@ tr:nth-child(even) {
         </ul>
         </div>
     </nav>
+
+    //Logic of book borrow
+    <div class="container">
+    @if($errors->any())
+        <div class="alert alert-danger">
+            <ul>
+                @foreach($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+        @if(session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+        <form action="{{ route('borrow-book') }}" method="POST">
+            @csrf
+            <div class="form-group">
+                <input type="text" class="form-control" id="isbn" name="isbn" placeholder="Enter Book ISBN">
+            </div>
+            <button type="submit" class="btn btn-primary">Borrow</button>
+        </form>
+    </div>
     
 </body>
 </html>
