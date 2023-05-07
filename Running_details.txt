@@ -1,0 +1,16 @@
+db names:
+financeportal
+libraryportal
+studentportal
+
+
+php artisan migrate
+
+Finance Portal:
+php -S localhost:8888 -t public
+
+Library Portal:
+php -S localhost:8080 -t public
+
+Student Portal:
+php artisan serve
